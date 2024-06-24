@@ -12,6 +12,6 @@ discover:
     how: shell
     tests:
       - name: rpmverify
-        test: 'rpmverify $(rpm -qa | grep audit)'
+        test: 'rpmverify $(dnf list installed audit)'
         duration: 2m
 
