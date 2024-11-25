@@ -5,6 +5,9 @@ adjust:
   - when: distro == centos-stream-10
     enabled: false
     because: we want to run this plan only for rhel distros
+  - when: distro == centos-stream-9
+    enabled: false
+    because: we want to run this plan only for rhel distros
 
 prepare:
   - how: shell
