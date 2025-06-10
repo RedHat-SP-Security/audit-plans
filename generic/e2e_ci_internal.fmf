@@ -23,3 +23,5 @@ discover:
     ref: master
     filter: tag:CI-Tier-1
 
+execute:
+    how: tmt
