@@ -1,0 +1,41 @@
+# used in
+# https://gitlab.com/redhat/centos-stream/rpms/audit
+
+summary: package update scenario
+
+execute:
+    how: tmt
+
+prepare:
+  - how: shell
+    order: 90
+    script:
+      # remove installed (tested) audit and any leftovers
+      - dnf -y remove '*audit*'
+      # install older audit
+      - dnf -y install audit --disablerepo test-artifacts
+
+discover:
+
+  - name: Pre_update_scenario
+    how: fmf
+    url: https://gitlab.cee.redhat.com/special-projects/tests/audit
+    ref: master
+    test:
+      - /Sanity/audit-upgrade-test
+
+  - name: Update_audit_package
+    how: shell
+    tests:
+      - name: audit_update
+        test: dnf -y update '*audit*'
+        duration: 2m
+
+  - name: Post_update_scenario
+    how: fmf
+    url: https://gitlab.cee.redhat.com/special-projects/tests/audit
+    ref: master
+    test:
+      - /Sanity/audit-upgrade-test
+    environment:
+      IN_PLACE_UPGRADE: "new"
