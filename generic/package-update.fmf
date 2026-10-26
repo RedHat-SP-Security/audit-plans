@@ -10,10 +10,8 @@ prepare:
   - how: shell
     order: 90
     script:
-      # remove installed (tested) audit and any leftovers
-      - dnf -y remove '*audit*'
-      # install older audit
-      - dnf -y install audit --disablerepo test-artifacts
+      # downgrade all audit packages to older versions from base repos
+      - dnf -y downgrade '*audit*' 'audispd-plugins*' --disablerepo test-artifacts || true
 
 discover:
 
