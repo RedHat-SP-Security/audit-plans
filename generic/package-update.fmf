@@ -1,0 +1,39 @@
+# used in
+# https://gitlab.com/redhat/centos-stream/rpms/audit
+
+summary: package update scenario
+
+execute:
+    how: tmt
+
+prepare:
+  - how: shell
+    order: 90
+    script:
+      # downgrade all audit packages to older versions from base repos
+      - dnf -y downgrade '*audit*' 'audispd-plugins*' --disablerepo test-artifacts || true
+
+discover:
+
+  - name: Pre_update_scenario
+    how: fmf
+    url: https://gitlab.cee.redhat.com/special-projects/tests/audit
+    ref: master
+    test:
+      - /Sanity/audit-upgrade-test
+
+  - name: Update_audit_package
+    how: shell
+    tests:
+      - name: audit_update
+        test: dnf -y update '*audit*'
+        duration: 2m
+
+  - name: Post_update_scenario
+    how: fmf
+    url: https://gitlab.cee.redhat.com/special-projects/tests/audit
+    ref: master
+    test:
+      - /Sanity/audit-upgrade-test
+    environment:
+      IN_PLACE_UPGRADE: "new"
